@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kgav.gw.assetmanage.asset.mapper.AssetMapper">
+
+
+
+    <!-- 자산 조회  -->
+    <select id="searchAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
+        SELECT *
+        FROM ATS_MASTER
+    </select>
+
+    <!--
+    <select id="countAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
+        SELECT COUNT(*)
+        FROM ATS_MASTER
+        WHERE 1=1
+    </select>
+    <select id="searchAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
+        SELECT *
+        FROM ( SELECT row_number() over (order by ANO) AS RNUM, A.ITEMDCD, B.ITEM4NM, A.ANO, A.ACDID, A.ANM, A.AMODELNO, A.AMODELNM, D.CONM, A.APART, A.AUSER, A.MYEAR, C.STATENM, A.IYEAR, A.APLACE
+        FROM ATS_MASTER A, ATS_ITEM4 B, ATS_STATE C, CORPCODE D WHERE B.ITEM2CD = '98'
+        AND A.ITEMDCD = B.ITEM4CD AND A.ASTATE=C.STATECD AND A.ACORPCD=D.COCD||D.DIVCD
+        AND ITEMDCD=#{sItemdcd}
+        AND AUSER LIKE #{sUsernm}
+        AND ACORPCD = #{sCorpCd}
+        AND ASTATE = #{sStateCd}
+        AND ANO LIKE #{sAno}
+        if(!sAplace.equals("")){
+        sbSql.append("AND APLACE = '"+sAplace+"'");
+        }
+        if(!sAcdid.equals("")){ // 250327 자산코드 추가
+        sbSql.append("AND ACDID LIKE '%"+sAcdid+"%'");)
+        WHERE RNUM >= ?-(?*?)+1 AND RNUM <= ?-(?-1)*?
+        ORDER BY RNUM DESC
+    </select>
+    <insert id="insertAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel">
+        INSERT INTO ATS_MASTER
+        ( ITEMDCD,ANO,ANM,ACORPCD,ACORP,APART,AUSER,MYEAR MCORP,ASTATE,ITEM1CD,ITEM2CD,ITEM3CD,
+          REGID,REGIP,REGDT,ATTR1,ATTR2, ATTR3,ATTR4,ATTR5,IYEAR,APLACE,SPEC,PRICE,ACDID)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    </insert>
+    -->
+
+</mapper>
+
+
+
