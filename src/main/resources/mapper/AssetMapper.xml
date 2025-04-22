@@ -4,13 +4,34 @@
 
 <mapper namespace="com.kgav.gw.assetmanage.asset.mapper.AssetMapper">
 
-
-
     <!-- 자산 조회  -->
     <select id="searchAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
         SELECT *
-        FROM ATS_MASTER
+        FROM
+        (
+            SELECT row_number() over (order by ANO) AS RNUM, A.ITEMDCD, B.ITEM4NM, A.ANO, A.ACDID, A.ANM, A.AMODELNO, A.AMODELNM, D.CONM, A.APART, A.AUSER, A.MYEAR, C.STATENM, A.IYEAR, A.APLACE
+            FROM ATS_MASTER A, ATS_ITEM4 B, ATS_STATE C, CORPCODE D WHERE B.ITEM2CD = '98'
+            AND A.ITEMDCD = B.ITEM4CD AND A.ASTATE=C.STATECD AND A.ACORPCD=D.COCD||D.DIVCD
+            AND ITEMDCD=#{sItemdcd}
+            AND AUSER LIKE CONCAT('%',#{sUsernm},'%')
+            AND ACORPCD = #{sCorpCd}
+            AND ASTATE = #{sStateCd}
+            AND ANO LIKE CONCAT('%',#{sAno},'%')
+        <where>
+            <if test="#{sAplace} != '' and #{sAplace} != null">
+                AND APLACE = #{sAplace}
+            </if>
+        </where>
+        <where>
+            <if test="#{sAcdid} != '' and #{sAcdid} != null">
+                AND sAcdid LIKE CONCAT('%',#{sAcdid},'%')
+            </if>
+        </where>
+        )
+        WHERE RNUM >= ?-(?*?)+1 AND RNUM <= ?-(?-1)*?
+        ORDER BY RNUM DESC
     </select>
+
 
     <!--
     <select id="countAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
@@ -18,6 +39,12 @@
         FROM ATS_MASTER
         WHERE 1=1
     </select>
+    <where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				${searchCondition} like CONCAT('%',#{searchKeyword},'%')
+			</if>
+		</where>
+
     <select id="searchAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
         SELECT *
         FROM ( SELECT row_number() over (order by ANO) AS RNUM, A.ITEMDCD, B.ITEM4NM, A.ANO, A.ACDID, A.ANM, A.AMODELNO, A.AMODELNM, D.CONM, A.APART, A.AUSER, A.MYEAR, C.STATENM, A.IYEAR, A.APLACE
