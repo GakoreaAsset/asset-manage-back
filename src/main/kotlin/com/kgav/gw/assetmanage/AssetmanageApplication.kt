@@ -10,7 +10,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
 
 @SpringBootApplication
-@MapperScan("com.kgav.gw.assetmanage.asset.mapper")
 class AssetmanageApplication
 
 fun main(args: Array<String>) {

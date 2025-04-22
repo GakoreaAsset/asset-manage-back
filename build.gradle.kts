@@ -27,7 +27,11 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     // implementation("org.springframework.boot:spring-boot-starter-data-jpa")     // jpa
-    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3") // mybatis
+
+    // mybatis
+    implementation("org.mybatis:mybatis:3.5.11")
+    implementation("org.mybatis:mybatis-spring:3.0.3")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
     // implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2")
 
     // 코틀린 기본 의존성
@@ -53,8 +57,4 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-tasks.withType<ProcessResources> {
-    from("src/main/resources")
 }

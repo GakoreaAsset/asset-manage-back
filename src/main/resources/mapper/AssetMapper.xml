@@ -7,8 +7,13 @@
     <!-- 자산 조회  -->
     <select id="searchAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
         SELECT *
-        FROM
-        (
+        FROM ats_master
+
+    </select>
+
+
+    <!--
+            (
             SELECT row_number() over (order by ANO) AS RNUM, A.ITEMDCD, B.ITEM4NM, A.ANO, A.ACDID, A.ANM, A.AMODELNO, A.AMODELNM, D.CONM, A.APART, A.AUSER, A.MYEAR, C.STATENM, A.IYEAR, A.APLACE
             FROM ATS_MASTER A, ATS_ITEM4 B, ATS_STATE C, CORPCODE D WHERE B.ITEM2CD = '98'
             AND A.ITEMDCD = B.ITEM4CD AND A.ASTATE=C.STATECD AND A.ACORPCD=D.COCD||D.DIVCD
@@ -30,10 +35,7 @@
         )
         WHERE RNUM >= ?-(?*?)+1 AND RNUM <= ?-(?-1)*?
         ORDER BY RNUM DESC
-    </select>
 
-
-    <!--
     <select id="countAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
         SELECT COUNT(*)
         FROM ATS_MASTER
