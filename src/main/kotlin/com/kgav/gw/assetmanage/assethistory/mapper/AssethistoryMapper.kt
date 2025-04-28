@@ -1,0 +1,8 @@
+package com.kgav.gw.assetmanage.assethistory.mapper
+
+import org.apache.ibatis.annotations.Mapper
+
+@Mapper
+interface AssethistoryMapper {
+
+}

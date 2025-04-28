@@ -1,7 +1,6 @@
-package com.kgav.gw.assetmanage.asset.model
+package com.kgav.gw.assetmanage.asset.dto
 
-// ats_master 테이블
-data class AssetModel(
+data class AslistRequest(
     val itemdcd: String?,
     val ano: Int?,
     val anm: String?,
@@ -29,4 +28,5 @@ data class AssetModel(
     val spec: String?,
     val price: String?,
     val acdid: String?,
+    var pageNumber: Int
 )

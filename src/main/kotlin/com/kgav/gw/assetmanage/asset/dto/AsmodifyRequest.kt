@@ -1,21 +1,15 @@
-package com.kgav.gw.assetmanage.asset.model
+package com.kgav.gw.assetmanage.asset.dto
 
-// ats_master 테이블
-data class AssetModel(
-    val itemdcd: String?,
-    val ano: Int?,
+data class AsmodifyRequest(
+    val itemdcd: String,
+    val ano: Int,
     val anm: String?,
-    val amodelno: String?,
     val acorpcd: String?,
-    val acorp: String?,
     val apart: String?,
     val auser: String?,
     val myear: Int?,
     val mcorp: String?,
     val astate: String?,
-    val item1cd: String?,
-    val item2cd: String?,
-    val item3cd: String?,
     val regid: String?,
     val regip: String?,
     val regdt: String?,

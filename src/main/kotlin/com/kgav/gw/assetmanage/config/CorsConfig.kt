@@ -13,6 +13,6 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://localhost:5173", "http://localhost:5173")   // 주소에 대한 허용
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")         // 허용할 HTTP 메서드
             .allowedHeaders("*")                                                // 헤더 허용
-            .allowCredentials(true)                                                     // 쿠키 전송 허용
+            .allowCredentials(true)                                        // 쿠키 전송 허용
     }
 }

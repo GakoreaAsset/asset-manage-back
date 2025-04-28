@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Component
 import java.io.IOException
 
+// 필터는 jwt 사용할때도 필요한 중요요소
 // Spring Boot가 자동으로 등록
 @Component
 class LoggingFilter : Filter {

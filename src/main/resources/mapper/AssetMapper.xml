@@ -4,74 +4,91 @@
 
 <mapper namespace="com.kgav.gw.assetmanage.asset.mapper.AssetMapper">
 
-    <!-- 자산 조회  -->
-    <select id="searchAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
-        SELECT *
-        FROM ats_master
-
+    <!-- 자산 숫자 조희 -->
+    <select id="countAsset" parameterType="AssetModel" resultType="Integer">
+        SELECT count(*)
+          FROM ats_master
+        <if test="itemdcd != null and itemdcd != ''">
+           AND ITEMDCD=#{itemdcd}
+        </if>
+        <if test="auser != null and auser != ''">
+           AND AUSER LIKE CONCAT('%',#{auser},'%')
+        </if>
+        <if test="astate != null and astate != ''">
+           AND ASTATE=#{astate}
+        </if>
+        <if test="ano != null and ano != ''">
+           AND ANO LIKE CONCAT('%',#{ano},'%')
+        </if>
+        <if test="aplace != null and aplace != ''">
+           AND ASTATE=#{aplace}
+        </if>
+        <if test="acdid != null and acdid != ''">
+           AND ACDID LIKE CONCAT('%',#{acdid},'%')
+        </if>
     </select>
 
-
-    <!--
-            (
-            SELECT row_number() over (order by ANO) AS RNUM, A.ITEMDCD, B.ITEM4NM, A.ANO, A.ACDID, A.ANM, A.AMODELNO, A.AMODELNM, D.CONM, A.APART, A.AUSER, A.MYEAR, C.STATENM, A.IYEAR, A.APLACE
-            FROM ATS_MASTER A, ATS_ITEM4 B, ATS_STATE C, CORPCODE D WHERE B.ITEM2CD = '98'
-            AND A.ITEMDCD = B.ITEM4CD AND A.ASTATE=C.STATECD AND A.ACORPCD=D.COCD||D.DIVCD
-            AND ITEMDCD=#{sItemdcd}
-            AND AUSER LIKE CONCAT('%',#{sUsernm},'%')
-            AND ACORPCD = #{sCorpCd}
-            AND ASTATE = #{sStateCd}
-            AND ANO LIKE CONCAT('%',#{sAno},'%')
-        <where>
-            <if test="#{sAplace} != '' and #{sAplace} != null">
-                AND APLACE = #{sAplace}
-            </if>
-        </where>
-        <where>
-            <if test="#{sAcdid} != '' and #{sAcdid} != null">
-                AND sAcdid LIKE CONCAT('%',#{sAcdid},'%')
-            </if>
-        </where>
-        )
-        WHERE RNUM >= ?-(?*?)+1 AND RNUM <= ?-(?-1)*?
-        ORDER BY RNUM DESC
-
-    <select id="countAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
-        SELECT COUNT(*)
-        FROM ATS_MASTER
-        WHERE 1=1
+    <!--  자산 페이지 조회  -->
+    <select id="listAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.AslistRequest" resultType="com.kgav.gw.assetmanage.asset.dto.AslistRespond">
+        <!-- ${} 방식보다 바인드 방식이 더 안전하고 많이 쓰이기 때문에 변경함 -->
+        <bind name="number" value="(pageNumber*20).intValue()"/>
+        SELECT m.ITEMDCD AS itemdcd, i.ITEM4NM AS item4nm, m.ANO AS ano, m.ACDID AS acdid, m.ANM AS anm, m.AMODELNO AS amodelno, m.AMODELNM AS amodelnm,
+                c.CONM AS conm, m.APART AS apart, m.AUSER AS auser, m.MYEAR AS myear, s.STATENM AS statenm, m.IYEAR AS iyear, m.APLACE AS aplace
+          FROM ats_master m, ats_item i, ats_state s, corpcode c
+         WHERE i.item2cd = '98'
+           AND m.itemdcd = i.item4cd
+           AND m.astate=s.statecd
+           AND m.acorpcd=concat(c.cocd, c.divcd)
+        <if test="itemdcd != null and itemdcd != ''">
+           AND ITEMDCD=#{itemdcd}
+        </if>
+        <if test="auser != null and auser != ''">
+           AND AUSER LIKE CONCAT('%',#{auser},'%')
+        </if>
+        <if test="astate != null and astate != ''">
+           AND ASTATE=#{astate}
+        </if>
+        <if test="ano != null and ano != ''">
+           AND ANO LIKE CONCAT('%',#{ano},'%')
+        </if>
+        <if test="aplace != null and aplace != ''">
+           AND ASTATE=#{aplace}
+        </if>
+        <if test="acdid != null and acdid != ''">
+           AND ACDID LIKE CONCAT('%',#{acdid},'%')
+        </if>
+        ORDER BY ANO DESC
+        LIMIT #{number}, 20
     </select>
-    <where>
-			<if test="searchKeyword != null and searchKeyword != ''">
-				${searchCondition} like CONCAT('%',#{searchKeyword},'%')
-			</if>
-		</where>
 
-    <select id="searchAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel" resultType="com.kgav.gw.assetmanage.asset.model.AssetModel">
-        SELECT *
-        FROM ( SELECT row_number() over (order by ANO) AS RNUM, A.ITEMDCD, B.ITEM4NM, A.ANO, A.ACDID, A.ANM, A.AMODELNO, A.AMODELNM, D.CONM, A.APART, A.AUSER, A.MYEAR, C.STATENM, A.IYEAR, A.APLACE
-        FROM ATS_MASTER A, ATS_ITEM4 B, ATS_STATE C, CORPCODE D WHERE B.ITEM2CD = '98'
-        AND A.ITEMDCD = B.ITEM4CD AND A.ASTATE=C.STATECD AND A.ACORPCD=D.COCD||D.DIVCD
-        AND ITEMDCD=#{sItemdcd}
-        AND AUSER LIKE #{sUsernm}
-        AND ACORPCD = #{sCorpCd}
-        AND ASTATE = #{sStateCd}
-        AND ANO LIKE #{sAno}
-        if(!sAplace.equals("")){
-        sbSql.append("AND APLACE = '"+sAplace+"'");
-        }
-        if(!sAcdid.equals("")){ // 250327 자산코드 추가
-        sbSql.append("AND ACDID LIKE '%"+sAcdid+"%'");)
-        WHERE RNUM >= ?-(?*?)+1 AND RNUM <= ?-(?-1)*?
-        ORDER BY RNUM DESC
-    </select>
-    <insert id="insertAsset" parameterType="com.kgav.gw.assetmanage.asset.model.AssetModel">
-        INSERT INTO ATS_MASTER
-        ( ITEMDCD,ANO,ANM,ACORPCD,ACORP,APART,AUSER,MYEAR MCORP,ASTATE,ITEM1CD,ITEM2CD,ITEM3CD,
-          REGID,REGIP,REGDT,ATTR1,ATTR2, ATTR3,ATTR4,ATTR5,IYEAR,APLACE,SPEC,PRICE,ACDID)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    <!-- 자산 관리 물품 추가 -->
+    <insert id="addAsset" parameterType="AssetModel">
+        INSERT INTO ats_master ( itmedcd,anm,acorpcd,acorp,aprat,auser,myear,mcorp,astate,item1cd,item2cd,item3cd,
+                                regid,regip,regdt,attr1,attr2,attr3,attr4,attr5,iyear,aplace,spec,price,acdid )
+        VALUES ( #{itemdcd},#{anm},#{acorpcd},#{acorp},#{aprat},#{auser},#{myear},#{mcorp},#{astate},#{item1cd},#{item2cd},#{item3cd},
+                #{regid},#{regip},now(),#{attr1},#{attr2},#{attr3},#{attr4},#{attr5},#{iyear},#{aplace},#{spec},#{price},#{acdid} )
     </insert>
-    -->
+
+    <!--  자산이력 업데이트  -->
+
+
+<!--자산 기록 업데이트 -->
+        <!-- 기존내용 업데이트  -->
+    <insert id="addAssethistory" parameterType="com.kgav.gw.assetmanage.asset.dto.AsmodifyRequest">
+        INSERT INTO ats_m_history ( ITEMDCD,ANO,SEQ,ANM,ACORPCD,ACORP,APART,AUSER,MYEAR,MCORP,ASTATE,ITEM1CD,ITEM2CD,
+                                    ITEM3CD,REGID,REGIP,REGDTATTR1,ATTR2,ATTR3,ATTR4,ATTR5,IYEAR,APLACE,SPEC,ACDID )
+        SELECT ITEMDCD,ANO,(SELECT NVL(MAX(SEQ)+1,1) AS SEQ FROM ATS_M_HISTORY WHERE ITEMDCD=#{itemdcd} AND ANO=#{ano}),
+        ANM,ACORPCD,ACORP,APART,AUSER,MYEAR,MCORP,ASTATE,ITEM1CD,ITEM2CD,ITEM3CD,REGID,REGIP,REGDT,
+        ATTR1,ATTR2,ATTR3,ATTR4,ATTR5,IYEAR,APLACE,SPEC,ACDID FROM ATS_MASTER WHERE ITEMDCD=#{itemdcd} AND ANO=#{ano}
+
+    </insert>
+        <!-- 신규내용 업데이트  -->
+    <update id="modifyAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.AsmodifyRequest">
+        UPDATE ATS_MASTER
+           SET ANM=#{anm}, ACORPCD=#{acorpcd}, APART=#{aprat},AUSER=#{auser}, MYEAR=#{myear}, MCORP=#{mcorp},ASTATE=#{astate}, REGID=#{regid}, REGIP=#{regip}, REGDT=now(),
+               ATTR1=#{attr1}, ATTR2=#{attr2}, ATTR3=#{attr3}, ATTR4=#{attr4}, ATTR5=#{attr5}, IYEAR=#{iyear}, APLACE=#{aplace}, SPEC=#{spec}, ACDID=#{acdid}
+        WHERE ITEMDCD=#{itemdcd} AND ANO=#{ano}
+    </update>
 
 </mapper>
 
