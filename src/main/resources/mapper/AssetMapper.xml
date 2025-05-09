@@ -29,7 +29,7 @@
     </select>
 
     <!--  자산 페이지 조회  -->
-    <select id="listAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.AslistRequest" resultType="com.kgav.gw.assetmanage.asset.dto.AslistRespond">
+    <select id="listAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AslistRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AslistResponse">
         <!-- ${} 방식보다 바인드 방식이 더 안전하고 많이 쓰이기 때문에 변경함 -->
         <bind name="number" value="(pageNumber*20).intValue()"/>
         SELECT m.ITEMDCD AS itemdcd, i.ITEM4NM AS item4nm, m.ANO AS ano, m.ACDID AS acdid, m.ANM AS anm, m.AMODELNO AS amodelno, m.AMODELNM AS amodelnm,
@@ -65,16 +65,30 @@
     <insert id="addAsset" parameterType="AssetModel">
         INSERT INTO ats_master ( itmedcd,anm,acorpcd,acorp,aprat,auser,myear,mcorp,astate,item1cd,item2cd,item3cd,
                                 regid,regip,regdt,attr1,attr2,attr3,attr4,attr5,iyear,aplace,spec,price,acdid )
-        VALUES ( #{itemdcd},#{anm},#{acorpcd},#{acorp},#{aprat},#{auser},#{myear},#{mcorp},#{astate},#{item1cd},#{item2cd},#{item3cd},
+        VALUES ( #{itemdcd},#{anm},#{acorpcd},#{acorp},#{apart},#{auser},#{myear},#{mcorp},#{astate},#{item1cd},#{item2cd},#{item3cd},
                 #{regid},#{regip},now(),#{attr1},#{attr2},#{attr3},#{attr4},#{attr5},#{iyear},#{aplace},#{spec},#{price},#{acdid} )
     </insert>
 
-    <!--  자산이력 업데이트  -->
-
+    <!-- 자산 상세보기  -->
+    <!-- 회사, 상태, 설치장소 내용까지 들고가지만 대상에 대한 내용리스트는 프론트에서 구현 쿼리X 여기서는 내용 상세만 가져가도록 -->
+    <!-- statecd는 필요X -->
+    <select id="detailAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsdetailRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse">
+        SELECT m.ITEMDCD AS itemdcd, i.ITEM4NM AS item4nm, i.ITEM4CD AS item4cd, m.ANO AS ano, m.ACDID AS acdid, m.ANM AS anm, m.AMODELNO AS amodelno, m.AMODELNM AS amodelnm,
+                c.CONM AS conm, m.ACORPCD as acorpcd, m.ACORP as acorp, m.APART AS apart, m.AUSER AS auser, m.MYEAR AS myear, m.MCORP AS mcorp, s.STATENM AS statenm,
+                m.ITEM1CD AS item1cd, m.ITEM2CD AS item2cd, m.ITEM3CD AS item3cd, m.REGID AS regid, m.REGIP AS regip, TO_CHAR(m.REGDT, 'YYYY.MM.DD') AS regdt, m.ATTR1 AS attr1,
+                m.ATTR2 AS attr2, m.ATTR3 AS attr3, m.ATTR4 AS attr4, m.ATTR5 AS attr5, m.IYEAR AS iyear, m.APLACE AS aplace, m.SPEC AS spec, m.PRICE AS price
+        FROM ats_master m, ats_item i, ats_state s, corpcode c
+        WHERE i.item2cd = '98'
+        AND m.itemdcd = i.item4cd
+        AND m.astate=s.statecd
+        AND m.acorpcd=concat(c.cocd, c.divcd)
+        AND ITEMDCD=#{itemdcd}
+        AND ANO=#{ano}
+    </select>
 
 <!--자산 기록 업데이트 -->
         <!-- 기존내용 업데이트  -->
-    <insert id="addAssethistory" parameterType="com.kgav.gw.assetmanage.asset.dto.AsmodifyRequest">
+    <insert id="addhistoryAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest">
         INSERT INTO ats_m_history ( ITEMDCD,ANO,SEQ,ANM,ACORPCD,ACORP,APART,AUSER,MYEAR,MCORP,ASTATE,ITEM1CD,ITEM2CD,
                                     ITEM3CD,REGID,REGIP,REGDTATTR1,ATTR2,ATTR3,ATTR4,ATTR5,IYEAR,APLACE,SPEC,ACDID )
         SELECT ITEMDCD,ANO,(SELECT NVL(MAX(SEQ)+1,1) AS SEQ FROM ATS_M_HISTORY WHERE ITEMDCD=#{itemdcd} AND ANO=#{ano}),
@@ -83,9 +97,9 @@
 
     </insert>
         <!-- 신규내용 업데이트  -->
-    <update id="modifyAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.AsmodifyRequest">
+    <update id="modifyAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest">
         UPDATE ATS_MASTER
-           SET ANM=#{anm}, ACORPCD=#{acorpcd}, APART=#{aprat},AUSER=#{auser}, MYEAR=#{myear}, MCORP=#{mcorp},ASTATE=#{astate}, REGID=#{regid}, REGIP=#{regip}, REGDT=now(),
+           SET ANM=#{anm}, ACORPCD=#{acorpcd}, APART=#{apart},AUSER=#{auser}, MYEAR=#{myear}, MCORP=#{mcorp},ASTATE=#{astate}, REGID=#{regid}, REGIP=#{regip}, REGDT=now(),
                ATTR1=#{attr1}, ATTR2=#{attr2}, ATTR3=#{attr3}, ATTR4=#{attr4}, ATTR5=#{attr5}, IYEAR=#{iyear}, APLACE=#{aplace}, SPEC=#{spec}, ACDID=#{acdid}
         WHERE ITEMDCD=#{itemdcd} AND ANO=#{ano}
     </update>

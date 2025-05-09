@@ -1,15 +1,13 @@
-package com.kgav.gw.assetmanage.asset.dto
+package com.kgav.gw.assetmanage.asset.dto.request
 
-data class AslistRequest(
+data class AsaddRequest(
     val itemdcd: String?,
-    val ano: Int?,
     val anm: String?,
-    val amodelno: String?,
     val acorpcd: String?,
     val acorp: String?,
     val apart: String?,
     val auser: String?,
-    val myear: Int?,
+    val myear: String?,
     val mcorp: String?,
     val astate: String?,
     val item1cd: String?,
@@ -17,7 +15,6 @@ data class AslistRequest(
     val item3cd: String?,
     val regid: String?,
     val regip: String?,
-    val regdt: String?,
     val attr1: String?,
     val attr2: String?,
     val attr3: String?,
@@ -27,6 +24,5 @@ data class AslistRequest(
     val aplace: String?,
     val spec: String?,
     val price: String?,
-    val acdid: String?,
-    var pageNumber: Int
+    val acdid: String?
 )

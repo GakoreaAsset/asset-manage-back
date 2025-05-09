@@ -1,7 +1,7 @@
-package com.kgav.gw.assetmanage.asset.dto
+package com.kgav.gw.assetmanage.asset.dto.response
 
 // 자산관리 내용 받기
-data class AslistRespond(
+data class AslistResponse(
     val itemdcd: String?,
     val item4nm: String?,
     val ano: Int?,
