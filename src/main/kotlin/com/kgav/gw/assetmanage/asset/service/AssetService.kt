@@ -32,8 +32,8 @@ class AssetService(private val assetMapper: AssetMapper) {
     }
 
     fun modifyAsset(asmodifyRequest: AsmodifyRequest): Int {
-        // update 숫자가 1이면 기존내용도 업데이트하면서 신규내용도 업데이트하기
-        if (asmodifyRequest.update == 1) {
+        // update가 true면 기존내용도 업데이트하면서 신규내용도 업데이트하기
+        if (asmodifyRequest.update == true) {
             assetMapper.addhistoryAsset(asmodifyRequest)
             val modify:Int = assetMapper.modifyAsset(asmodifyRequest)
             println("기존내용 업데이트 하는 버전")

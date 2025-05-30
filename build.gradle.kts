@@ -39,6 +39,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8")) // 코틀린 표준 라이브러리
 
     // 스프링 코틀린 필수 의존
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web")
     developmentOnly("org.springframework.boot:spring-boot-devtools")

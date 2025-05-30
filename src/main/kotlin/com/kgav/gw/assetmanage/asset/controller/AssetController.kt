@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*
 // 관련 파일 연결
 import com.kgav.gw.assetmanage.asset.model.AssetModel
 import com.kgav.gw.assetmanage.asset.service.AssetService
+import jakarta.servlet.http.HttpServletRequest
 
 // 자산 페이지
 @RestController
@@ -36,9 +37,21 @@ class AssetController(private val assetService: AssetService) {
 
     // 자산 신규 입력
     @PostMapping("/add")
-    fun addAsset(asaddRequest: AsaddRequest): Int {
+    fun addAsset(request: HttpServletRequest, @RequestBody asaddRequest: AsaddRequest): Int {
         println("addAsset 컨트롤러 도달")
-        println(asaddRequest)
+        // 프록시 환경일때 X-Forwarded-For 헤더가 존재하면 해당 값을 우선 사용
+        val forwardedIp = request.getHeader("X-Forwarded-For")
+        // 헤더가 없으면 직접 연결된 클라이언트의 IP 사용
+        val clientIp = forwardedIp ?: request.remoteAddr
+
+        println("요청 IP: $clientIp")
+        println("요청 자산 정보: $asaddRequest")
+
+        // 사내망일경우 내부 적시
+        if (asaddRequest.regip == "221.163.112.122" ) {
+            asaddRequest.regip = clientIp
+            println("변경된 내부망IP: $asaddRequest")
+        }
         return assetService.addAsset(asaddRequest)
     }
 
@@ -52,9 +65,18 @@ class AssetController(private val assetService: AssetService) {
 
     // 자산 업데이트 입력
     @PostMapping("/modify")
-    fun modifyAsset(asmodifyRequest: AsmodifyRequest): Int {
+    fun modifyAsset(request: HttpServletRequest, @RequestBody asmodifyRequest: AsmodifyRequest): Int {
         println("modifyAsset 컨트롤러 도달")
-        println(asmodifyRequest)
+
+        val forwardedIp = request.getHeader("X-Forwarded-For")
+        val clientIp = forwardedIp ?: request.remoteAddr
+        println("요청 IP: $clientIp")
+        println("요청 자산 정보: $asmodifyRequest")
+
+        if (asmodifyRequest.regip == "221.163.112.122" ) {
+            asmodifyRequest.regip = clientIp
+            println("변경된 내부망IP: $asmodifyRequest")
+        }
         return assetService.modifyAsset(asmodifyRequest)
     }
 }

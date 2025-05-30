@@ -4,9 +4,4 @@
 
 <mapper namespace="com.kgav.gw.assetmanage.assethistory.mapper.AssethistoryMapper">
 
-<!-- 히스토리 수량 체크 -->
-
-<!-- 히스토리 리스트 출력 -->
-
-
 </mapper>

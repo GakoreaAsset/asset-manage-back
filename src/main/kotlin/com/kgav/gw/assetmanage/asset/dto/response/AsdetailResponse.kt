@@ -1,9 +1,9 @@
 package com.kgav.gw.assetmanage.asset.dto.response
 
+// 코틀린 data class는 31개 까지만 가능하다 
 data class AsdetailResponse(
     val itemdcd: String?,
     val item4nm: String?,
-    val item4cd: String?,
     val ano: Int?,
     val acdid: String?,
     val anm: String?,
@@ -17,9 +17,7 @@ data class AsdetailResponse(
     val myear: String?,
     val mcorp: String?,
     val statenm: String?,
-    val item1cd: String?,
-    val item2cd: String?,
-    val item3cd: String?,
+    val astate: String?,
     val regid: String?,
     val regip: String?,
     val regdt: String?,
@@ -31,5 +29,6 @@ data class AsdetailResponse(
     val iyear: String?,
     val aplace: String?,
     val spec: String?,
-    val price: String?
+    val price: String?,
+    val update : Boolean?
 )
