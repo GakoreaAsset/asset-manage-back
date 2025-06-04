@@ -11,12 +11,13 @@ import com.kgav.gw.assetmanage.asset.dto.request.AsaddRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AsdetailRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AslistRequest
 import com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse
+import com.kgav.gw.assetmanage.asset.model.AssetModel
 
 @Service
 class AssetService(private val assetMapper: AssetMapper) {
 
-    fun countAsset(): Int {
-        return assetMapper.countAsset()
+    fun countAsset(aslistRequest: AslistRequest): Int {
+        return assetMapper.countAsset(aslistRequest)
     }
 
     fun listAsset(aslistRequest: AslistRequest): List<AslistResponse> {

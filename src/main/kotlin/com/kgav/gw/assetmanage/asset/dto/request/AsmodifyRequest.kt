@@ -24,5 +24,6 @@ data class AsmodifyRequest(
     val iyear : String?,
     val aplace : String?,
     val spec : String?,
-    val acdid : String?
+    val acdid : String?,
+    val price : String?
 )

@@ -22,16 +22,18 @@ import jakarta.servlet.http.HttpServletRequest
 class AssetController(private val assetService: AssetService) {
 
     // 자산 수량 요청  
-    @GetMapping("/pagenum")
-    fun getPagenum(assetModel: AssetModel): Int {
+    @PostMapping("/pagenum")
+    fun getPagenum(@RequestBody aslistRequest: AslistRequest): Int {
         println("getPagenum 컨트롤러 도달")
-        return assetService.countAsset()
+        println("asmodel 정보: $aslistRequest")
+        return assetService.countAsset(aslistRequest)
     }
     
     // 자산 리스트 출력 (20개)
     @PostMapping("/page") 
     fun assetPage(@RequestBody aslistRequest: AslistRequest): List<AslistResponse> {
         println("assetPage 컨트롤러 도달")
+        println("aslist 정보: $aslistRequest")
         return assetService.listAsset(aslistRequest)
     }
 

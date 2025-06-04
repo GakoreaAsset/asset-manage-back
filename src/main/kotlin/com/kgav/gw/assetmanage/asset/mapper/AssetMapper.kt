@@ -10,10 +10,11 @@ import com.kgav.gw.assetmanage.asset.dto.request.AsdetailRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AslistRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest
 import com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse
+import com.kgav.gw.assetmanage.asset.model.AssetModel
 
 @Mapper
 interface AssetMapper {
-    fun countAsset(): Int
+    fun countAsset(aslistRequest: AslistRequest): Int
     fun listAsset(aslistRequest: AslistRequest): List<AslistResponse>
     fun addAsset(asaddRequest: AsaddRequest): Int
     fun modifyAsset(asmodifyRequest: AsmodifyRequest): Int

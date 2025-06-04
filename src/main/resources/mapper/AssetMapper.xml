@@ -5,9 +5,11 @@
 <mapper namespace="com.kgav.gw.assetmanage.asset.mapper.AssetMapper">
 
     <!-- 자산 숫자 조희 -->
-    <select id="countAsset" parameterType="AssetModel" resultType="Integer">
+    <select id="countAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AslistRequest" resultType="Integer">
         SELECT count(*)
-          FROM ats_master
+          FROM ats_master m, ats_item i
+         WHERE i.item2cd = '98'
+           AND m.itemdcd = i.item4cd
         <if test="itemdcd != null and itemdcd != ''">
            AND ITEMDCD=#{itemdcd}
         </if>
@@ -21,10 +23,10 @@
            AND ANO LIKE CONCAT('%',#{ano},'%')
         </if>
         <if test="aplace != null and aplace != ''">
-           AND ASTATE=#{aplace}
+           AND APLACE=#{aplace}
         </if>
-        <if test="acdid != null and acdid != ''">
-           AND ACDID LIKE CONCAT('%',#{acdid},'%')
+        <if test="anm != null and anm != ''">
+            AND ANM LIKE CONCAT('%',#{anm},'%')
         </if>
     </select>
 
@@ -52,10 +54,10 @@
            AND ANO LIKE CONCAT('%',#{ano},'%')
         </if>
         <if test="aplace != null and aplace != ''">
-           AND ASTATE=#{aplace}
+           AND APLACE=#{aplace}
         </if>
-        <if test="acdid != null and acdid != ''">
-           AND ACDID LIKE CONCAT('%',#{acdid},'%')
+        <if test="anm != null and anm != ''">
+           AND ANM LIKE CONCAT('%',#{anm},'%')
         </if>
         ORDER BY ANO DESC
         LIMIT #{number}, 20
@@ -99,7 +101,7 @@
     <update id="modifyAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest">
         UPDATE ATS_MASTER
            SET ITEMDCD=#{itemdcd}, ANM=#{anm}, ACORPCD=#{acorpcd}, APART=#{apart},AUSER=#{auser}, MYEAR=#{myear}, MCORP=#{mcorp},ASTATE=#{astate}, REGID=#{regid}, REGIP=#{regip}, REGDT=now(),
-               ATTR1=#{attr1}, ATTR2=#{attr2}, ATTR3=#{attr3}, ATTR4=#{attr4}, ATTR5=#{attr5}, IYEAR=#{iyear}, APLACE=#{aplace}, SPEC=#{spec}, ACDID=#{acdid}
+               ATTR1=#{attr1}, ATTR2=#{attr2}, ATTR3=#{attr3}, ATTR4=#{attr4}, ATTR5=#{attr5}, IYEAR=#{iyear}, APLACE=#{aplace}, SPEC=#{spec}, ACDID=#{acdid}, PRICE=#{price}
          WHERE ANO=#{ano}
     </update>
 
