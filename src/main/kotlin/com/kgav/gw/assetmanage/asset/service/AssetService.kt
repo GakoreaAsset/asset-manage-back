@@ -9,8 +9,10 @@ import com.kgav.gw.assetmanage.asset.dto.response.AslistResponse
 import com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AsaddRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AsdetailRequest
+import com.kgav.gw.assetmanage.asset.dto.request.AsdetailhistoryRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AslistRequest
 import com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse
+import com.kgav.gw.assetmanage.asset.dto.response.AsdetailhistoryResponse
 import com.kgav.gw.assetmanage.asset.model.AssetModel
 
 @Service
@@ -44,5 +46,9 @@ class AssetService(private val assetMapper: AssetMapper) {
             println("기존내용 업데이트 안하는 버전")
             return assetMapper.modifyAsset(asmodifyRequest)
         }
+    }
+
+    fun detailhistoryAsset(asdetailhistoryRequest: AsdetailhistoryRequest): List<AsdetailhistoryResponse> {
+        return assetMapper.detailhistoryAsset(asdetailhistoryRequest)
     }
 }

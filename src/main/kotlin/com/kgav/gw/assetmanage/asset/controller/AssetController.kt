@@ -3,10 +3,12 @@ package com.kgav.gw.assetmanage.asset.controller
 // 애노테이션 연결
 import com.kgav.gw.assetmanage.asset.dto.request.AsaddRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AsdetailRequest
+import com.kgav.gw.assetmanage.asset.dto.request.AsdetailhistoryRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AslistRequest
 import com.kgav.gw.assetmanage.asset.dto.response.AslistResponse
 import com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest
 import com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse
+import com.kgav.gw.assetmanage.asset.dto.response.AsdetailhistoryResponse
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.*
@@ -80,5 +82,13 @@ class AssetController(private val assetService: AssetService) {
             println("변경된 내부망IP: $asmodifyRequest")
         }
         return assetService.modifyAsset(asmodifyRequest)
+    }
+
+    // 특정 자산 히스토리 출력
+    @GetMapping("/detailhistory")
+    fun detailhistoryAsset(asdetailhistoryRequest: AsdetailhistoryRequest): List<AsdetailhistoryResponse> {
+        println("detailhistoryAsset 컨트롤러 도달")
+        println(asdetailhistoryRequest)
+        return assetService.detailhistoryAsset(asdetailhistoryRequest)
     }
 }

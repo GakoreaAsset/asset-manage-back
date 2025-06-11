@@ -76,7 +76,7 @@
     <!-- statecd, itemdcd는 필요X -->
     <select id="detailAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsdetailRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse">
         SELECT m.ITEMDCD AS itemdcd, i.ITEM4NM AS item4nm, i.ITEM4CD AS item4cd, m.ANO AS ano, m.ACDID AS acdid, m.ANM AS anm, m.AMODELNO AS amodelno, m.AMODELNM AS amodelnm,
-               c.CONM AS conm, m.ACORPCD as acorpcd, m.ACORP as acorp, m.APART AS apart, m.AUSER AS auser, m.MYEAR AS myear, m.MCORP AS mcorp, s.STATENM AS statenm,
+               c.CONM AS conm, m.ACORPCD AS acorpcd, m.ACORP AS acorp, m.APART AS apart, m.AUSER AS auser, m.MYEAR AS myear, m.MCORP AS mcorp, s.STATENM AS statenm,
                m.ASTATE AS astate, m.REGID AS regid, m.REGIP AS regip, DATE_FORMAT(m.REGDT, '%Y.%m.%d') AS regdt, m.ATTR1 AS attr1, m.ATTR2 AS attr2, m.ATTR3 AS attr3,
                m.ATTR4 AS attr4, m.ATTR5 AS attr5, m.IYEAR AS iyear, m.APLACE AS aplace, m.SPEC AS spec, m.PRICE AS price
           FROM ats_master m, ats_item i, ats_state s, corpcode c
@@ -104,6 +104,19 @@
                ATTR1=#{attr1}, ATTR2=#{attr2}, ATTR3=#{attr3}, ATTR4=#{attr4}, ATTR5=#{attr5}, IYEAR=#{iyear}, APLACE=#{aplace}, SPEC=#{spec}, ACDID=#{acdid}, PRICE=#{price}
          WHERE ANO=#{ano}
     </update>
+
+<!-- 자산디테일 히스토리 출력 -->
+    <select id="detailhistoryAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsdetailhistoryRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AsdetailhistoryResponse">
+        SELECT A.SEQ AS seq, A.ITEMDCD AS itemdcd, B.ITEM4NM AS item4nm, A.ANO AS ano, A.ACDID AS acdid, A.ANM AS anm, D.CONM AS conm,
+               A.APART AS apart, A.AUSER AS auser, A.MYEAR AS myear, C.STATENM AS statnm, A.IYEAR AS iyear, A.APLACE AS aplace
+          FROM ats_m_history A, ats_item B, ats_state C, corpcode D
+         WHERE A.ITEMDCD = B.ITEM4CD
+           AND A.ASTATE = C.STATECD
+           AND A.ACORPCD = CONCAT(D.COCD, D.DIVCD)
+           AND B.ITEM2CD = '98'
+           AND A.ANO=#{ano}
+         ORDER BY A.SEQ
+    </select>
 
 </mapper>
 
