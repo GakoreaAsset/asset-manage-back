@@ -6,5 +6,7 @@ import org.apache.ibatis.annotations.Mapper
 @Mapper
 interface UserMapper {
 
+    fun findById(userid: String): UserModel?
+
     fun getUser(userModel: UserModel): Int
 }

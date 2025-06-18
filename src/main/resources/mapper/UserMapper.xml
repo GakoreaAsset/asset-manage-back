@@ -4,13 +4,22 @@
 
 <mapper namespace="com.kgav.gw.assetmanage.user.mapper.UserMapper">
 
-    <!-- 아이디 및 비밀번호 조회  -->
+    <!-- JWT ID조회  -->
+    <select id="findById" parameterType="string" resultType="UserModel">
+        SELECT userid, userpw, username, common_name as commonName
+          FROM userinfo u, common_code c
+         WHERE u.roles = c.common_number
+           AND userid = #{userid}
+    </select>
+
+    <!-- 세션방식 아이디 및 비밀번호 조회  -->
     <select id="getUser" parameterType="UserModel" resultType="Integer">
         SELECT count(*)
           FROM userinfo
-         WHERE userid=#{userid}
-           AND userpw=#{userpw}
+         WHERE userid = #{userid}
+           AND userpw = #{userpw}
     </select>
+
 
     <!-- 아이디 및 비밀번호 생성 -->
 
