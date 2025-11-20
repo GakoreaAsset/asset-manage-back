@@ -12,8 +12,6 @@ import com.kgav.gw.assetmanage.asset.dto.request.AslistRequest
 import com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest
 import com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse
 import com.kgav.gw.assetmanage.asset.dto.response.AsdetailhistoryResponse
-import com.kgav.gw.assetmanage.asset.model.AssetModel
-
 @Mapper
 interface AssetMapper {
     fun countAsset(aslistRequest: AslistRequest): Int

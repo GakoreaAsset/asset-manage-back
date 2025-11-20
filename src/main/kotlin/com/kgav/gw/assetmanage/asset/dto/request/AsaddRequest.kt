@@ -13,7 +13,7 @@ data class AsaddRequest(
     val item1cd: String?,
     val item2cd: String?,
     val item3cd: String?,
-    val regid: String?,
+    var regid: String?,
     var regip: String?,
     val regdt: String?,
     val attr1: String?,

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kgav.gw.assetmanage.swlicense.mapper.SwMapper">
+
+    <!-- sw 리스트 갯수 조회 -->
+    <select id="countsw" parameterType="com.kgav.gw.assetmanage.swlicense.dto.request.SwlistRequest" resultType="Integer">
+        SELECT COUNT(*)
+          FROM sw_master
+         WHERE 1=1
+           AND delyn='N'
+        <if test="itemdcd != null and itemdcd != ''">
+           AND itemdcd = #{itemdcd}
+        </if>
+        <if test="apart != null and apart != ''">
+           AND apart LIKE CONCAT('%',#{apart},'%')
+        </if>
+        <if test="acorpcd != null and acorpcd != ''">
+           AND acorpcd = #{acorpcd}
+        </if>
+        <if test="astate != null and astate != ''">
+           AND astate = #{astate}
+        </if>
+        <if test="lgubun != null and lgubun != ''">
+           AND lgubun = #{lgubun}
+        </if>
+        <if test="swno != null and swno != ''">
+           AND swno LIKE CONCAT('%',#{swno},'%')
+        </if>
+    </select>
+
+    <!-- sw 리스트 출력 -->
+    <select id="listsw" parameterType="com.kgav.gw.assetmanage.swlicense.dto.request.SwlistRequest" resultType="com.kgav.gw.assetmanage.swlicense.dto.response.SwlistResponse">
+        <bind name="number" value="(pageNumber*18).intValue()"/>
+        SELECT A.swno AS swno, D.shortnm AS shortnm, A.itemdcd AS itemdcd, B.item4nm AS item4nm, A.ugubun AS ugubun, A.swnm AS swnm, A.aplace AS aplace, A.lqty AS lqty
+             , A.lgubun AS lgubun, A.apart AS apart, A.auser AS auser, A.myear AS myear, C.statenm AS statenm, A.iyear AS iyear
+             , A.lsdate AS lsdate, A.ledate AS ledate, A.rqty AS rqty
+          FROM sw_master A, ats_item B, ats_state C, corpcode D
+         WHERE A.delyn='N'
+           AND B.item2cd = '99'
+           AND A.itemdcd = B.item4cd
+           AND A.astate=C.statecd
+           AND A.acorpcd=CONCAT(D.cocd, D.divcd)
+        <if test="itemdcd != null and itemdcd != ''">
+           AND itemdcd = #{itemdcd}
+        </if>
+        <if test="apart != null and apart != ''">
+           AND apart LIKE CONCAT('%',#{apart},'%')
+        </if>
+        <if test="acorpcd != null and acorpcd != ''">
+           AND acorpcd = #{acorpcd}
+        </if>
+        <if test="astate != null and astate != ''">
+           AND astate = #{astate}
+        </if>
+        <if test="lgubun != null and lgubun != ''">
+           AND lgubun = #{lgubun}
+        </if>
+        <if test="swno != null and swno != ''">
+           AND swno LIKE CONCAT('%',#{swno},'%')
+        </if>
+         ORDER BY swno DESC
+         LIMIT #{number}, 19
+    </select>
+
+<!--     sw 디테일 출력 DECODE(A.lgubun,'01','패키지/영구','02','구독형','')  -->
+    <select id="detailsw" parameterType="com.kgav.gw.assetmanage.swlicense.dto.request.SwdetailRequest" resultType="com.kgav.gw.assetmanage.swlicense.dto.response.SwdetailResponse">
+        SELECT swno, itemdcd, swnm, mcorp, myear, ugubun, lgubun
+             , lqty, rqty, lsdate, ledate, astate  astate, iyear, price
+             , aplace, apart, ACORP  acorp, auser, acorpcd  acorpcd
+             , regid, regip, regdt, spec, attr1, attr2
+          FROM sw_master
+         WHERE delyn='N'
+           AND swno=#{swno}
+    </select>
+
+    <!-- sw 내용 수정   -->
+    <update id="modifysw" parameterType="com.kgav.gw.assetmanage.swlicense.dto.request.SwmodifyRequest">
+        UPDATE sw_master
+           SET itemdcd=#{itemdcd}, swnm=#{swnm}, mcorp=#{mcorp}, myear=#{myear}, ugubun=#{ugubun}, lgubun=#{lgubun}
+             , lqty=#{lqty}, rqty=#{rqty}, lsdate=#{lsdate}, ledate=#{ledate}, astate=#{astate}, iyear=#{iyear}, price=#{price}
+             , aplace=#{aplace}, apart=#{apart}, acorp=#{acorp}, auser=#{auser}, acorpcd=#{acorpcd}
+             , regid=#{regid}, regip=#{regip}, regdt=NOW(), spec=#{spec}, attr1=#{attr1}, attr2=#{attr2}
+         WHERE swno=#{swno}
+    </update>
+
+    <!-- 자산 관리 물품 추가 -->
+    <insert id="addsw" parameterType="com.kgav.gw.assetmanage.swlicense.dto.request.SwaddRequest">
+        INSERT INTO sw_master ( itemdcd, acorpcd, ugubun, swnm, astate, lgubun, lsdate, ledate, lqty, rqty, apart, auser, myear, mcorp
+             , regid, regip, regdt, attr1, attr2, spec, price, delyn )
+        VALUES ( #{itemdcd}, #{acorpcd},#{ugubun}, #{swnm}, #{astate}, #{lgubun}, #{lsdate}, #{ledate}, #{lqty}, #{rqty}, #{apart}, #{auser}, #{myear}, #{mcorp}
+             , #{regid}, #{regip}, now(), #{attr1}, #{attr2},#{spec},#{price}, 'N' )
+    </insert>
+
+</mapper>

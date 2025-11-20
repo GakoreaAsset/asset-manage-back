@@ -24,7 +24,8 @@ repositories {
 dependencies {
 
     // mybatis와 JPA 구성
-    runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("com.mysql:mysql-connector-j")                          // mysql
+    implementation("com.microsoft.sqlserver:mssql-jdbc:12.6.0.jre11")  // mssql https://learn.microsoft.com/ko-kr/sql/connect/jdbc/system-requirements-for-the-jdbc-driver?view=sql-server-ver17
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     // implementation("org.springframework.boot:spring-boot-starter-data-jpa")     // jpa
 
@@ -40,8 +41,8 @@ dependencies {
 
     // 스프링 코틀린 필수 의존
     implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     // 보안 관련 의존성
     implementation("org.springframework.boot:spring-boot-starter-security") // 스프링 시큐리티
@@ -61,4 +62,23 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+// 프론트엔드 경로 지정
+val frontendDir = "${project.projectDir}/../asset-front"
+
+// 프론트엔드 빌드 태스크 정의 (윈도우 환경 cmd, c 추가)
+val npmInstall by tasks.registering(Exec::class) {
+    workingDir = file("../asset-front")
+    commandLine = listOf("cmd", "/c", "npm install")
+}
+
+val npmBuild by tasks.registering(Exec::class) {
+    workingDir = file("../asset-front")
+    commandLine = listOf("cmd", "/c", "npm run build")
+}
+
+// 프론트엔드 빌드 후, 리소스 복사
+tasks.named("processResources") {
+    dependsOn(npmInstall, npmBuild)
 }

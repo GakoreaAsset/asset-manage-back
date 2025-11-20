@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kgav.gw.assetmanage.ipmanage.mapper.IpMapper">
+
+    <!-- ip 리스트 갯수 조회 -->
+    <select id="countip" parameterType="com.kgav.gw.assetmanage.ipmanage.dto.request.IplistRequest" resultType="Integer">
+        SELECT COUNT(*)
+          FROM gw_iplist
+         WHERE 1=1
+        <if test="ipaddr != null and ipaddr != ''">
+           AND ipaddr LIKE CONCAT('%',#{ipaddr},'%')
+        </if>
+        <if test="usernm != null and usernm != ''">
+           AND usernm LIKE CONCAT('%',#{usernm},'%')#e
+        </if>
+        <if test="deptnm != null and deptnm != ''">
+           AND deptnm LIKE CONCAT('%',#{deptnm},'%')#
+        </if>
+        <if test="ipyn != null and ipyn != ''">
+           AND ipyn = #{ipyn}
+        </if>
+    </select>
+
+    <!-- ip 리스트 출력 -->
+    <select id="listip" parameterType="com.kgav.gw.assetmanage.ipmanage.dto.request.IplistRequest" resultType="com.kgav.gw.assetmanage.ipmanage.dto.response.IplistResponse">
+        <bind name="number" value="(pageNumber*18).intValue()"/>
+        SELECT seq, IFNULL(ipaddr, '') AS ipaddr, IFNULL(deptnm, '') AS deptnm, IFNULL(usernm, '') AS usernm, IFNULL(pubipaddr, '') AS pubipaddr, IFNULL(etc, '') AS etc, ipyn
+          FROM gw_iplist
+         WHERE 1=1
+        <if test="ipaddr != null and ipaddr != ''">
+           AND ipaddr LIKE CONCAT('%',#{ipaddr},'%')
+        </if>
+        <if test="usernm != null and usernm != ''">
+           AND usernm LIKE CONCAT('%',#{usernm},'%')#
+        </if>
+        <if test="deptnm != null and deptnm != ''">
+           AND deptnm LIKE CONCAT('%',#{deptnm},'%')#
+        </if>
+        <if test="ipyn != null and ipyn != ''">
+           AND ipyn = #{ipyn}
+        </if>
+         ORDER BY seq DESC
+         LIMIT #{number}, 19
+    </select>
+
+    <!-- ip 디테일 출력   -->
+    <select id="detailip" parameterType="com.kgav.gw.assetmanage.ipmanage.dto.request.IpdetailRequest" resultType="com.kgav.gw.assetmanage.ipmanage.dto.response.IpdetailResponse">
+        SELECT seq, IFNULL(ipaddr, '') AS ipaddr, ipyn, IFNULL(deptnm, '') AS deptnm, IFNULL(usernm, '') AS usernm, IFNULL(pubipaddr, '') AS pubipaddr, IFNULL(etc, '') AS etc
+          FROM gw_iplist
+         WHERE seq = #{seq}
+    </select>
+
+    <!-- ip 내용 수정   -->
+    <update id="modifyip" parameterType="com.kgav.gw.assetmanage.ipmanage.dto.request.IpmodifyRequset">
+        UPDATE gw_iplist
+           SET deptnm=#{deptnm}, usernm=#{usernm}, pubipaddr=#{pubipaddr}, etc=#{etc}, regid=#{regid}, regip=#{regip}, regdt=NOW(), ipyn=#{ipyn}
+         WHERE seq=#{seq}
+    </update>
+
+</mapper>

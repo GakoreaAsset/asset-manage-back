@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    API 내역
+    checkempuse : 월별 사원 검색 내용
+
+-->
+
+<mapper namespace="com.kgav.gw.mealmanage.empuse.mapper.EmpuseMapper">
+
+    <!-- 월별 사원 검색  -->
+    <select id="checkempuse" parameterType="EmpuseRequest" resultType="com.kgav.gw.mealmanage.empuse.dto.response.EmpuseResponse" >
+        SELECT SUBSTRING(C_Date, 1, 6) as cDate, L_UID as lUtd, C_Name as cName, count(*) AS daycnt
+          FROM tEnter
+         WHERE L_Result = '0'
+           AND SUBSTRING(C_Date, 1, 6) = #{searchDay}
+        <if test="eName != null and eName != ''">
+           AND C_Name = #{eName}
+        </if>
+        <if test="eId != null and eId != ''">
+            AND L_UID = #{eId}
+        </if>
+        <if test="eGroup != null and eGroup != ''">
+            AND C_Office= = #{eGroup}
+        </if>
+         GROUP BY SUBSTRING(C_Date, 1, 6), lutd, cName"
+    </select>
+
+</mapper>

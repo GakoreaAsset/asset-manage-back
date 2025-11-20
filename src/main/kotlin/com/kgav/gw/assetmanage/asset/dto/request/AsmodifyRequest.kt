@@ -14,7 +14,7 @@ data class AsmodifyRequest(
     val myear : String?,
     val mcorp : String?,
     val astate : String?,
-    val regid : String?,
+    var regid : String?,
     var regip : String?,
     val attr1 : String?,
     val attr2 : String?,

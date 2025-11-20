@@ -1,0 +1,34 @@
+package com.kgav.gw.assetmanage.swlicense.dto.response
+
+import com.kgav.gw.assetmanage.common.dto.AttrDto
+import com.kgav.gw.assetmanage.common.dto.RegDto
+import com.kgav.gw.assetmanage.common.dto.UdDto
+import com.kgav.gw.assetmanage.common.dto.UseruseDto
+
+data class SwdetailResponse(
+    val swno : String?,
+    val itemdcd : String?,
+    val swnm : String?,
+    val mcorp : String?,
+    val myear : String?,
+    val ugubun : String?,
+    val lgubun : String?,
+    val lqty : String?,
+    val rqty : String?,
+    val lsdate : String?,
+    val ledate : String?,
+    val astate : String?,
+    val iyear : String?,
+    val price : String?,
+    val aplace : String?,
+    val apart : String?,
+    val acorp : String?,
+    val auser : String?,
+    val acorpcd : String?,
+    val regid : String?,
+    val regip : String?,
+    val regdt : String?,
+    val spec : String?,
+    val attr1 : String?,
+    val attr2 : String?,
+)

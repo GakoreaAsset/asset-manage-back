@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kgav.gw.assetmanage.asset.mapper.AssetMapper">
+
+    <!-- 자산 숫자 조희 -->
+    <select id="countAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AslistRequest" resultType="Integer">
+        SELECT count(*)
+          FROM ats_master m, ats_item i
+         WHERE i.item2cd = '98'
+           AND m.itemdcd = i.item4cd
+        <if test="itemdcd != null and itemdcd != ''">
+           AND itemdcd=#{itemdcd}
+        </if>
+        <if test="auser != null and auser != ''">
+           AND auser LIKE CONCAT('%',#{auser},'%')
+        </if>
+        <if test="astate != null and astate != ''">
+           AND astate=#{astate}
+        </if>
+        <if test="ano != null and ano != ''">
+           AND ano LIKE CONCAT('%',#{ano},'%')
+        </if>
+        <if test="aplace != null and aplace != ''">
+           AND aplace=#{aplace}
+        </if>
+        <if test="anm != null and anm != ''">
+            AND anm LIKE CONCAT('%',#{anm},'%')
+        </if>
+    </select>
+
+    <!--  자산 페이지 조회  -->
+    <select id="listAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AslistRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AslistResponse">
+        <!-- ${} 방식보다 바인드 방식이 더 안전하고 많이 쓰이기 때문에 변경함 -->
+        <bind name="number" value="(pageNumber*20).intValue()"/>
+        SELECT m.itemdcd AS itemdcd, i.item4nm AS item4nm, m.ano AS ano, m.acdid AS acdid, m.anm AS anm, m.amodelno AS amodelno, m.amodelnm AS amodelnm
+             , c.conm AS conm, m.apart AS apart, m.auser AS auser, m.myear AS myear, s.statenm AS statenm, m.iyear AS iyear, m.aplace AS aplace
+          FROM ats_master m, ats_item i, ats_state s, corpcode c
+         WHERE i.item2cd = '98'
+           AND m.itemdcd = i.item4cd
+           AND m.astate = s.statecd
+           AND m.acorpcd = concat(c.cocd, c.divcd)
+        <if test="itemdcd != null and itemdcd != ''">
+           AND itemdcd = #{itemdcd}
+        </if>
+        <if test="auser != null and auser != ''">
+           AND auser LIKE CONCAT('%',#{auser},'%')
+        </if>
+        <if test="astate != null and astate != ''">
+           AND astate = #{astate}
+        </if>
+        <if test="ano != null and ano != ''">
+           AND ano = #{ano}
+        </if>
+        <if test="aplace != null and aplace != ''">
+           AND aplace=#{aplace}
+        </if>
+        <if test="anm != null and anm != ''">
+           AND anm LIKE CONCAT('%',#{anm},'%')
+        </if>
+        ORDER BY ano DESC
+        LIMIT #{number}, 19
+    </select>
+    <!-- and ano = LIKE CONCAT('%',#{ano},'%')  -->
+
+    <!-- 자산 관리 물품 추가 -->
+    <insert id="addAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsaddRequest">
+        INSERT INTO ats_master ( itemdcd, anm, acorpcd, acorp, apart, auser, myear, mcorp, astate, item1cd, item2cd, item3cd, regid
+             ,                   regip, regdt, attr1, attr2, attr3, attr4, attr5, iyear, aplace, spec, price, acdid )
+        VALUES ( #{itemdcd}, #{anm}, #{acorpcd}, #{acorp}, #{apart}, #{auser}, #{myear}, #{mcorp}, #{astate}, #{item1cd}, #{item2cd}, #{item3cd}
+             ,   #{regid}, #{regip}, now(), #{attr1}, #{attr2}, #{attr3}, #{attr4}, #{attr5}, #{iyear}, #{aplace}, #{spec}, #{price}, #{acdid} )
+    </insert>
+
+    <!-- 자산 상세보기  -->
+    <!-- 회사, 상태, 설치장소 내용까지 들고가지만 대상에 대한 내용리스트는 프론트에서 구현 쿼리X 여기서는 내용 상세만 가져가도록 -->
+    <!-- statecd, itemdcd는 필요X -->
+    <select id="detailAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsdetailRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AsdetailResponse">
+        SELECT m.itemdcd AS itemdcd, i.item4nm AS item4nm, i.item4cd AS item4cd, m.ano AS ano, m.acdid AS acdid, m.anm AS anm, m.amodelno AS amodelno, m.amodelnm AS amodelnm,
+               c.conm AS conm, m.acorpcd AS acorpcd, m.acorp AS acorp, m.apart AS apart, m.auser AS auser, m.myear AS myear, m.mcorp AS mcorp, s.statenm AS statenm,
+               m.astate AS astate, m.regid AS regid, m.regip AS regip, DATE_FORMAT(m.regdt, '%Y.%m.%d') AS regdt, m.attr1 AS attr1, m.attr2 AS attr2, m.attr3 AS attr3,
+               m.attr4 AS attr4, m.attr5 AS attr5, m.iyear AS iyear, m.aplace AS aplace, m.spec AS spec, m.price AS price
+          FROM ats_master m, ats_item i, ats_state s, corpcode c
+         WHERE i.item2cd = '98'
+           AND m.itemdcd = i.item4cd
+           AND m.astate=s.statecd
+           AND m.acorpcd=concat(c.cocd, c.divcd)
+           AND ano=#{ano}
+    </select>
+
+<!--자산 기록 업데이트 -->
+        <!-- 기존내용 업데이트  -->
+    <insert id="addhistoryAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest">
+        INSERT INTO ats_m_history ( itemdcd, ano, seq, anm, acorpcd, acorp, apart, auser, myear, mcorp, astate, item1cd, item2cd
+             ,                      item3cd, regid, regip, regdt, attr1, attr2, attr3, attr4, attr5, iyear, aplace, spec, acdid )
+        SELECT itemdcd, ano, (SELECT IFNULL(MAX(seq)+1,1) AS seq FROM ats_m_history WHERE ano=#{ano})
+             , anm, acorpcd, acorp, apart, auser, myear, mcorp, astate, item1cd, item2cd, item3cd, regid, regip, regdt
+             , attr1, attr2, attr3, attr4, attr5, iyear, aplace, spec, acdid
+          FROM ats_master
+         WHERE ano=#{ano}
+
+    </insert>
+        <!-- 신규내용 업데이트  -->
+    <update id="modifyAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsmodifyRequest">
+        UPDATE ats_master
+           SET itemdcd=#{itemdcd}, anm=#{anm}, acorpcd=#{acorpcd}, apart=#{apart},auser=#{auser}, myear=#{myear}, mcorp=#{mcorp},astate=#{astate}, regid=#{regid}, regip=#{regip}, regdt=now(),
+               attr1=#{attr1}, attr2=#{attr2}, attr3=#{attr3}, attr4=#{attr4}, attr5=#{attr5}, iyear=#{iyear}, aplace=#{aplace}, spec=#{spec}, acdid=#{acdid}, price=#{price}
+         WHERE ano=#{ano}
+    </update>
+
+<!-- 자산디테일 히스토리 출력 -->
+    <select id="detailhistoryAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AsdetailhistoryRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AsdetailhistoryResponse">
+        SELECT A.seq AS seq, A.itemdcd AS itemdcd, B.item4nm AS item4nm, A.ano AS ano, A.acdid AS acdid, A.anm AS anm, D.conm AS conm,
+               A.apart AS apart, A.auser AS auser, A.myear AS myear, C.statenm AS statenm, A.iyear AS iyear, A.aplace AS aplace
+          FROM ats_m_history A, ats_item B, ats_state C, corpcode D
+         WHERE A.itemdcd = B.item4cd
+           AND A.astate = C.statecd
+           AND A.acorpcd = CONCAT(D.cocd, D.divcd)
+           AND B.item2cd = '98'
+           AND A.ano=#{ano}
+         ORDER BY A.seq
+    </select>
+
+</mapper>
+
+
+
