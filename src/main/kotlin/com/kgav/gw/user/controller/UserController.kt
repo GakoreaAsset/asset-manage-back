@@ -45,10 +45,10 @@ class UserController(private val authenticationManager: AuthenticationManager, p
 
         // SameSite 강제 세팅방법 (해당 maxage를 통해 토큰이 쿠키에 들어있는 시간 조절)
         // HTTP 환경에선 Secure; 속성 제거 그리고 SameSite=None 사용불가 Lax 또는 Strict 사용
-//        httpresponse.setHeader("Set-Cookie","accessToken=$accessToken; Max-Age=900; Path=/; HttpOnly; SameSite=Lax")
-//        httpresponse.addHeader("Set-Cookie","refreshToken=$refreshToken; Max-Age=86400; Path=/; HttpOnly; SameSite=Lax")
-        httpresponse.setHeader("Set-Cookie","accessToken=$accessToken; Max-Age=1800; Path=/; Secure; HttpOnly; SameSite=None") // 크로스사이트에서는 SameSite=None 필수
-        httpresponse.addHeader("Set-Cookie","refreshToken=$refreshToken; Max-Age=86400; Path=/; Secure; HttpOnly; SameSite=None")
+        httpresponse.setHeader("Set-Cookie","accessToken=$accessToken; Max-Age=900; Path=/; HttpOnly; SameSite=Lax")
+        httpresponse.addHeader("Set-Cookie","refreshToken=$refreshToken; Max-Age=86400; Path=/; HttpOnly; SameSite=Lax")
+//        httpresponse.setHeader("Set-Cookie","accessToken=$accessToken; Max-Age=1800; Path=/; Secure; HttpOnly; SameSite=None") // 크로스사이트에서는 SameSite=None 필수
+//        httpresponse.addHeader("Set-Cookie","refreshToken=$refreshToken; Max-Age=86400; Path=/; Secure; HttpOnly; SameSite=None")
 
         println("AccessToken : $accessToken, RefreshToken : $refreshToken")
 
@@ -98,8 +98,8 @@ class UserController(private val authenticationManager: AuthenticationManager, p
             // 새로운 토큰 생성
             val newAccessToken = jwtUtil.generateAccessToken(username, roles, userId)
 
-//            response.setHeader("Set-Cookie", "accessToken=$newAccessToken; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax")
-            response.setHeader("Set-Cookie", "accessToken=$newAccessToken; Max-Age=1800; Path=/; Secure; HttpOnly; SameSite=None")
+            response.setHeader("Set-Cookie", "accessToken=$newAccessToken; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax")
+//            response.setHeader("Set-Cookie", "accessToken=$newAccessToken; Max-Age=1800; Path=/; Secure; HttpOnly; SameSite=None")
 
             return ResponseEntity.ok("갱신완료")
         }

@@ -33,7 +33,7 @@
     <!--  자산 페이지 조회  -->
     <select id="listAsset" parameterType="com.kgav.gw.assetmanage.asset.dto.request.AslistRequest" resultType="com.kgav.gw.assetmanage.asset.dto.response.AslistResponse">
         <!-- ${} 방식보다 바인드 방식이 더 안전하고 많이 쓰이기 때문에 변경함 -->
-        <bind name="number" value="(pageNumber*20).intValue()"/>
+        <bind name="number" value="(pageNumber*19).intValue()"/>
         SELECT m.itemdcd AS itemdcd, i.item4nm AS item4nm, m.ano AS ano, m.acdid AS acdid, m.anm AS anm, m.amodelno AS amodelno, m.amodelnm AS amodelnm
              , c.conm AS conm, m.apart AS apart, m.auser AS auser, m.myear AS myear, s.statenm AS statenm, m.iyear AS iyear, m.aplace AS aplace
           FROM ats_master m, ats_item i, ats_state s, corpcode c

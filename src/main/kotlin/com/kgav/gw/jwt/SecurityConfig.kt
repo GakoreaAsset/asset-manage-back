@@ -55,9 +55,10 @@ class SecurityConfig( private val userDetailsService: UserDetailsService, privat
 
         http.csrf { it.disable() } // JWT에서는 CSRF 불필요
             .cors { corsCustomizer(it) }
-            .authorizeHttpRequests { authz -> authz.requestMatchers("/api/v1/user/**", "/", "/index.html", "/favicon.ico", "/css/**", "/js/**", "/main/**", "/static/**", "/assets/**").permitAll() // user관련 요청은 전부 허용
+            .authorizeHttpRequests { authz -> authz.requestMatchers("/api/v1/user/**", "/", "/index.html", "/favicon.ico", "/css/**", "/js/**", "/main/**", "/static/**", "/assets/**", "/error").permitAll() // user관련 요청은 전부 허용
                                                    .anyRequest().authenticated() }
-            .exceptionHandling { ex -> ex.authenticationEntryPoint { _, response, _ -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증되지 않은 사용자입니다.") } }
+//            .exceptionHandling { ex -> ex.authenticationEntryPoint { _, response, _ -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증되지 않은 사용자입니다.") } }
+            .exceptionHandling { ex -> ex.authenticationEntryPoint { _, response, _ -> response.status = HttpServletResponse.SC_UNAUTHORIZED}}
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .userDetailsService(userDetailsService)
             .addFilterBefore(JwtAuthorizationFilter(parameterProperties), UsernamePasswordAuthenticationFilter::class.java)  // 필터 등록
@@ -69,7 +70,7 @@ class SecurityConfig( private val userDetailsService: UserDetailsService, privat
     fun corsCustomizer(cors: CorsConfigurer<HttpSecurity>) {
         cors.configurationSource {
             val configuration = CorsConfiguration()
-            configuration.allowedOrigins = listOf("http://localhost:5173", "http://as.kgav.com", "http://as.kgav.com:8080")
+            configuration.allowedOrigins = listOf("http://localhost:5173", "http://as.kgav.com", "http://as.kgav.com:8080", "http://150.1.1.55:8080")
             configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             configuration.allowedHeaders = listOf("*")
             configuration.exposedHeaders = listOf("*")

@@ -13,10 +13,10 @@
            AND ipaddr LIKE CONCAT('%',#{ipaddr},'%')
         </if>
         <if test="usernm != null and usernm != ''">
-           AND usernm LIKE CONCAT('%',#{usernm},'%')#e
+           AND usernm LIKE CONCAT('%',#{usernm},'%')
         </if>
         <if test="deptnm != null and deptnm != ''">
-           AND deptnm LIKE CONCAT('%',#{deptnm},'%')#
+           AND deptnm LIKE CONCAT('%',#{deptnm},'%')
         </if>
         <if test="ipyn != null and ipyn != ''">
            AND ipyn = #{ipyn}
@@ -33,10 +33,10 @@
            AND ipaddr LIKE CONCAT('%',#{ipaddr},'%')
         </if>
         <if test="usernm != null and usernm != ''">
-           AND usernm LIKE CONCAT('%',#{usernm},'%')#
+           AND usernm LIKE CONCAT('%',#{usernm},'%')
         </if>
         <if test="deptnm != null and deptnm != ''">
-           AND deptnm LIKE CONCAT('%',#{deptnm},'%')#
+           AND deptnm LIKE CONCAT('%',#{deptnm},'%')
         </if>
         <if test="ipyn != null and ipyn != ''">
            AND ipyn = #{ipyn}
